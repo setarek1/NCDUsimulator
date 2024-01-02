@@ -81,6 +81,26 @@ void drawButtons() {
 
     glFlush();
 }
+void mouseClick(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        y = WINDOW_HEIGHT - y; // Invert y-coordinate to match OpenGL space
+
+        for (int i = 0; i < 3; ++i) {
+            if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].width &&
+                y >= buttons[i].y && y <= buttons[i].y + buttons[i].height) {
+                buttons[i].clicked = 1;
+                printf("%s clicked!\n", buttons[i].text);
+            } else {
+                buttons[i].clicked = 0;
+            }
+        }
+        glutPostRedisplay();
+    }
+}
+
+void display() {
+    drawButtons();
+}
 
 int main(int argc, char *argv[]) {
     // if (argc != 2) {
