@@ -31,12 +31,15 @@ struct FileInfo {
 int shmid;
 struct FileInfo *sharedData;
 
+//mutex lock
 pthread_mutex_t lock;
+
+//semaphore
 sem_t semaphore;
 
-
-void *traverseDirectoryWithProcesses(void *path);
-void *traverseDirectoryWithThreads(void *path);
+//functions:
+void *traverseDirectoryWithProcesses(void *path); //for main directory
+void *traverseDirectoryWithThreads(void *path); 
 
 int main(int argc, char *argv[]) {
     // if (argc != 2) {
@@ -45,7 +48,6 @@ int main(int argc, char *argv[]) {
     // }
     //printf("Enter Directory:")
     char *mainDirectory = "/Users/mac/Desktop/Codes/c"; //argv[1];
-
     printf("Main process started for folder: %s\n", mainDirectory);
 
     //initialize mutex
@@ -53,27 +55,29 @@ int main(int argc, char *argv[]) {
 
     //shared memory segment creation
     shmid = shmget(SHM_KEY, sizeof(struct FileInfo), IPC_CREAT | 0666);
-    if (shmid == -1) {
-        perror("shmget failed");
-        exit(EXIT_FAILURE);
-    }
+
+    // if (shmid == -1) {
+    //     perror("shmget failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
     //attach shared memory
     sharedData = (struct FileInfo *)shmat(shmid, NULL, 0);
-    if (sharedData == (struct FileInfo *)(-1)) {
-        perror("shmat failed");
-        exit(EXIT_FAILURE);
-    }
+
+    // if (sharedData == (struct FileInfo *)(-1)) {
+    //     perror("shmat failed");
+    //     exit(EXIT_FAILURE);
+    // }
 
     //initialize shared data
     sharedData->numFiles = 0;
     sharedData->largestFileSize = 0;
     sharedData->smallestFileSize = __INT_MAX__;
 
-    //start directory traversal with processes
+    //directory traversal with processes
     traverseDirectoryWithProcesses((void *)mainDirectory);
 
-    //results
+    //print results
     printf("Total number of files: %d\n", sharedData->numFiles);
     printf("File types:\n");
     for (int i = 0; i < sharedData->numFiles; ++i) {
@@ -94,7 +98,7 @@ int main(int argc, char *argv[]) {
 }
 
 void *traverseDirectoryWithProcesses(void *path) { 
-    sem_init(&semaphore, 0, 1);
+    sem_init(&semaphore, 0, 1); //initialie semaphore
 
     char *currentPath = (char *)path;
 
@@ -135,7 +139,9 @@ void *traverseDirectoryWithProcesses(void *path) {
                 sharedData->smallestFileSize = fileSize;
                 strcpy(sharedData->smallestFile, filePath);
             }
-            printf("File(in the main process): %s, with size: %ld\n", filePath, fileSize);
+
+        printf("File(in the main process): %s, with size: %ld\n", filePath, fileSize);
+
         }
         if (entry->d_type == DT_DIR) {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
@@ -155,7 +161,7 @@ void *traverseDirectoryWithProcesses(void *path) {
                 closedir(dir);
                 //pthread_exit(NULL);
             } else { //parent process
-                wait(NULL); //wait for child process to finish before proceeding
+                wait(NULL); //wait for child process to finish before continuing
             }
         }
     }
@@ -165,7 +171,7 @@ void *traverseDirectoryWithProcesses(void *path) {
 }
 
 void *traverseDirectoryWithThreads(void *path) {
-    sem_wait(&semaphore);
+    sem_wait(&semaphore); //semaphore
     char *currentPath = (char *)path;
 
     DIR *dir;
@@ -226,7 +232,7 @@ void *traverseDirectoryWithThreads(void *path) {
             pthread_join(thread, NULL);
         }
     }
-    sem_post(&semaphore);
+    sem_post(&semaphore); //semaphore
 
     closedir(dir);
     pthread_exit(NULL);
