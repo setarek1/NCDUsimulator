@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
 
     //create the buttons
     
-    buttons[] = 100, 200, 100, 50, "Button 1", 0, "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize},
+    buttons[] = {100, 200, 100, 50, "Button 1", 0, "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize},
     {250, 200, 100, 50, "Button 2", 0, "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize},
     {400, 200, 100, 50, "Button 3", 0, "Final size of the main folder: %ld bytes\n", sharedData->finalSize}
 
