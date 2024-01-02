@@ -161,6 +161,22 @@ int main(int argc, char *argv[]) {
     //destroy mutex
     pthread_mutex_destroy(&lock);
 
+    //graphics
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    glutCreateWindow("OpenGL Buttons Example");
+
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set clear color to white
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+
+    glutDisplayFunc(display);
+    glutMouseFunc(mouseClick);
+
+    glutMainLoop();
+
     return 0;
 }
 
