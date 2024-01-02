@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
@@ -13,22 +12,8 @@
 #include <GLUT/glut.h>
 #include <OpenGL/gl.h>
 
-// graphics
-#define WINDOW_WIDTH 600
-#define WINDOW_HEIGHT 400
-//button
-typedef struct {
-    float x, y, width, height;
-    const char* text;
-    int clicked;
-    const char* message;
-} Button;
 
-Button buttons[3] = {
-    {100, 200, 100, 50, "Button 1", 0, "Button 1 Clicked!"},
-    {250, 200, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
-    {400, 200, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
-};
+
 
 #define MAX_FILES 1000
 #define MAX_FILE_PATH_LENGTH 256
@@ -57,56 +42,129 @@ pthread_mutex_t lock;
 //semaphore
 sem_t semaphore;
 
-//functions:
-void *traverseDirectoryWithProcesses(void *path); //for main directory
-void *traverseDirectoryWithThreads(void *path); 
+// graphics
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 400
+//button
+typedef struct {
+    float x, y, width, height;
+    const char* text;
+    int clicked;
+    const char* message;
+} Button;
 
-//functions for the graphics
+Button buttons[3] = {
+    {100, 200, 100, 50, "Button 1", 0, },
+    {250, 200, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
+    {400, 200, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
+};
+void drawText(float x, float y, const char* text) {
+    glRasterPos2f(x, y);
+    for (int i = 0; text[i] != '\0'; ++i) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+    }
+}
+
 void drawButtons() {
-    //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
+    glLoadIdentity();
+   
+    // Draw buttons
     for (int i = 0; i < 3; ++i) {
-        glColor3f(0.5f, 0.5f, 0.5f); // Gray color for button
+        glColor3f(0.5f, 0.5f, 0.5f);
         glBegin(GL_QUADS);
-            glVertex2f(buttons[i].x, buttons[i].y);
-            glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y);
-            glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y + buttons[i].height);
-            glVertex2f(buttons[i].x, buttons[i].y + buttons[i].height);
+        glVertex2f(buttons[i].x, buttons[i].y);
+        glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y);
+        glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y + buttons[i].height);
+        glVertex2f(buttons[i].x, buttons[i].y + buttons[i].height);
         glEnd();
-
-        drawText(buttons[i].text, buttons[i].x + 10, buttons[i].y + 20);
+       
+        glColor3f(1.0f, 1.0f, 1.0f);
+        drawText(buttons[i].x + 10, buttons[i].y + 20, buttons[i].text);
     }
 
-    for (int i = 0; i < 3; ++i) {
-        if (buttons[i].clicked) {
-            glColor3f(0.0f, 0.0f, 0.0f); // Black text color
-            drawText(buttons[i].message, 10, 30);
-        }
-    }
-
+    // Display information
+    glColor3f(1.0f, 0.0f, 0.0f);
+    drawText(50, 50, sharedData->largestFile);
+    drawText(50, 100, sharedData->smallestFile);
+    char totalSizeText[100];
+    sprintf(totalSizeText, "Total Size: %ld bytes", sharedData->finalSize);
+    drawText(50, 150, totalSizeText);
+   
     glFlush();
 }
+
 void mouseClick(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        y = WINDOW_HEIGHT - y; // Invert y-coordinate to match OpenGL space
-
         for (int i = 0; i < 3; ++i) {
             if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].width &&
                 y >= buttons[i].y && y <= buttons[i].y + buttons[i].height) {
-                buttons[i].clicked = 1;
-                printf("%s clicked!\n", buttons[i].text);
-            } else {
-                buttons[i].clicked = 0;
+                printf("%s\n", buttons[i].message);
             }
         }
-        glutPostRedisplay();
     }
 }
 
-void display() {
-    drawButtons();
+void initializeGraphics(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    glutCreateWindow("File Information");
+    gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+    glutDisplayFunc(drawButtons);
+    glutMouseFunc(mouseClick);
+    glutMainLoop();
 }
+
+
+//functions:
+void *traverseDirectoryWithProcesses(void *path); //for main directory
+void *traverseDirectoryWithThreads(void *path); 
+//functions for the graphics
+// void drawButtons() {
+//     //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//     glClear(GL_COLOR_BUFFER_BIT);
+
+//     for (int i = 0; i < 3; ++i) {
+//         glColor3f(0.5f, 0.5f, 0.5f); // Gray color for button
+//         glBegin(GL_QUADS);
+//             glVertex2f(buttons[i].x, buttons[i].y);
+//             glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y);
+//             glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y + buttons[i].height);
+//             glVertex2f(buttons[i].x, buttons[i].y + buttons[i].height);
+//         glEnd();
+
+//         drawText(buttons[i].text, buttons[i].x + 10, buttons[i].y + 20);
+//     }
+
+//     for (int i = 0; i < 3; ++i) {
+//         if (buttons[i].clicked) {
+//             glColor3f(0.0f, 0.0f, 0.0f); // Black text color
+//             drawText(buttons[i].message, 10, 30);
+//         }
+//     }
+
+//     glFlush();
+// }
+// void mouseClick(int button, int state, int x, int y) {
+//     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+//         y = WINDOW_HEIGHT - y; // Invert y-coordinate to match OpenGL space
+
+//         for (int i = 0; i < 3; ++i) {
+//             if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].width &&
+//                 y >= buttons[i].y && y <= buttons[i].y + buttons[i].height) {
+//                 buttons[i].clicked = 1;
+//                 printf("%s clicked!\n", buttons[i].text);
+//             } else {
+//                 buttons[i].clicked = 0;
+//             }
+//         }
+//         glutPostRedisplay();
+//     }
+// }
+
+// void display() {
+//     drawButtons();
+// }
 
 int main(int argc, char *argv[]) {
     // if (argc != 2) {
@@ -114,7 +172,7 @@ int main(int argc, char *argv[]) {
     //     exit(EXIT_FAILURE);
     // }
     //printf("Enter Directory:")
-    char *mainDirectory = "/Users/mac/Desktop/Codes/c"; //argv[1];
+    char *mainDirectory = "/Users/mac/Desktop/Codes/c/ThreadTest"; //argv[1];
     printf("Main process started for folder: %s\n", mainDirectory);
 
     //initialize mutex
@@ -160,17 +218,17 @@ int main(int argc, char *argv[]) {
     // {250, 200, 100, 50, "Button 2", 0, "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize},
     // {400, 200, 100, 50, "Button 3", 0, "Final size of the main folder: %ld bytes\n", sharedData->finalSize}
 
-    // buttons[0].message= "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize;
-    // buttons[1].message = "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize;
-    // buttons[2].message ="Final size of the main folder: %ld bytes\n", sharedData->finalSize;
-    // //detach and remove shared memory
-    // shmdt(sharedData);
-    // shmctl(shmid, IPC_RMID, NULL);
+    //strcpy(buttons[0].message,strcat("Address of the largest file: %s, Size: %ld\n",sharedData->largestFile));// sharedData->largestFileSize);
+    //strcpy(buttons[1].message ,"Address of the smallest file: %s, Size: %ld\n" sharedData->smallestFile, sharedData->smallestFileSize);
+    //strcpy(buttons[2].message ,"Final size of the main folder: %ld bytes\n", sharedData->finalSize);
+    //detach and remove shared memory
+    shmdt(sharedData);
+    shmctl(shmid, IPC_RMID, NULL);
 
-    // //destroy mutex
-    // pthread_mutex_destroy(&lock);
+    //destroy mutex
+    pthread_mutex_destroy(&lock);
 
-    // //display graphics
+    //display graphics
     // glutInit(&argc, argv);
     // glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     // glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -185,6 +243,7 @@ int main(int argc, char *argv[]) {
     // glutMouseFunc(mouseClick);
 
     // glutMainLoop();
+     initializeGraphics(argc, argv);
 
     return 0;
 }
@@ -330,3 +389,4 @@ void *traverseDirectoryWithThreads(void *path) {
     pthread_exit(NULL);
 
 }
+
