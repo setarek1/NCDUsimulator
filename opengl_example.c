@@ -13,9 +13,9 @@ typedef struct {
 } Button;
 
 Button buttons[3] = {
-    {100, 100, 100, 50, "Button 1", 0, "Button 1 Clicked!"},
-    {250, 100, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
-    {400, 100, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
+    {100, 200, 100, 50, "Button 1", 0, "Button 1 Clicked!"},
+    {250, 200, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
+    {400, 200, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
 };
 
 void drawText(const char* text, float x, float y) {

@@ -9,6 +9,21 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <semaphore.h>
+#include <stdio.h>
+#include <GLUT/glut.h>
+#include <OpenGL/gl.h>
+
+// graphics
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 400
+//button
+typedef struct {
+    float x, y, width, height;
+    const char* text;
+    int clicked;
+    const char* message;
+} Button;
+Button buttons[3]=NULL;
 
 #define MAX_FILES 1000
 #define MAX_FILE_PATH_LENGTH 256
@@ -40,6 +55,32 @@ sem_t semaphore;
 //functions:
 void *traverseDirectoryWithProcesses(void *path); //for main directory
 void *traverseDirectoryWithThreads(void *path); 
+
+//functions for the graphics
+void drawButtons() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    for (int i = 0; i < 3; ++i) {
+        glColor3f(0.5f, 0.5f, 0.5f); // Gray color for button
+        glBegin(GL_QUADS);
+            glVertex2f(buttons[i].x, buttons[i].y);
+            glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y);
+            glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y + buttons[i].height);
+            glVertex2f(buttons[i].x, buttons[i].y + buttons[i].height);
+        glEnd();
+
+        drawText(buttons[i].text, buttons[i].x + 10, buttons[i].y + 20);
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        if (buttons[i].clicked) {
+            glColor3f(0.0f, 0.0f, 0.0f); // Black text color
+            drawText(buttons[i].message, 10, 30);
+        }
+    }
+
+    glFlush();
+}
 
 int main(int argc, char *argv[]) {
     // if (argc != 2) {
@@ -86,6 +127,12 @@ int main(int argc, char *argv[]) {
     printf("Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize);
     printf("Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize);
     printf("Final size of the main folder: %ld bytes\n", sharedData->finalSize);
+
+    //create the buttons
+    
+    buttons[] = 100, 200, 100, 50, "Button 1", 0, "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize},
+    {250, 200, 100, 50, "Button 2", 0, "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize},
+    {400, 200, 100, 50, "Button 3", 0, "Final size of the main folder: %ld bytes\n", sharedData->finalSize}
 
     //detach and remove shared memory
     shmdt(sharedData);
