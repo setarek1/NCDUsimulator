@@ -23,7 +23,12 @@ typedef struct {
     int clicked;
     const char* message;
 } Button;
-Button buttons[3]=NULL;
+
+Button buttons[3] = {
+    {100, 200, 100, 50, "Button 1", 0, "Button 1 Clicked!"},
+    {250, 200, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
+    {400, 200, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
+};
 
 #define MAX_FILES 1000
 #define MAX_FILE_PATH_LENGTH 256
@@ -58,6 +63,7 @@ void *traverseDirectoryWithThreads(void *path);
 
 //functions for the graphics
 void drawButtons() {
+    //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (int i = 0; i < 3; ++i) {
@@ -150,32 +156,35 @@ int main(int argc, char *argv[]) {
 
     //create the buttons
     
-    buttons[] = {100, 200, 100, 50, "Button 1", 0, "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize},
-    {250, 200, 100, 50, "Button 2", 0, "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize},
-    {400, 200, 100, 50, "Button 3", 0, "Final size of the main folder: %ld bytes\n", sharedData->finalSize}
+    // buttons[] = {100, 200, 100, 50, "Button 1", 0, "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize},
+    // {250, 200, 100, 50, "Button 2", 0, "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize},
+    // {400, 200, 100, 50, "Button 3", 0, "Final size of the main folder: %ld bytes\n", sharedData->finalSize}
 
-    //detach and remove shared memory
-    shmdt(sharedData);
-    shmctl(shmid, IPC_RMID, NULL);
+    // buttons[0].message= "Address of the largest file: %s, Size: %ld\n", sharedData->largestFile, sharedData->largestFileSize;
+    // buttons[1].message = "Address of the smallest file: %s, Size: %ld\n", sharedData->smallestFile, sharedData->smallestFileSize;
+    // buttons[2].message ="Final size of the main folder: %ld bytes\n", sharedData->finalSize;
+    // //detach and remove shared memory
+    // shmdt(sharedData);
+    // shmctl(shmid, IPC_RMID, NULL);
 
-    //destroy mutex
-    pthread_mutex_destroy(&lock);
+    // //destroy mutex
+    // pthread_mutex_destroy(&lock);
 
-    //graphics
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("OpenGL Buttons Example");
+    // //display graphics
+    // glutInit(&argc, argv);
+    // glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    // glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    // glutCreateWindow("OpenGL Buttons Example");
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set clear color to white
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+    // glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set clear color to white
+    // glMatrixMode(GL_PROJECTION);
+    // glLoadIdentity();
+    // gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
 
-    glutDisplayFunc(display);
-    glutMouseFunc(mouseClick);
+    // glutDisplayFunc(display);
+    // glutMouseFunc(mouseClick);
 
-    glutMainLoop();
+    // glutMainLoop();
 
     return 0;
 }
