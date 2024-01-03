@@ -46,74 +46,74 @@ sem_t semaphore;
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 400
 //button
-typedef struct {
-    float x, y, width, height;
-    const char* text;
-    int clicked;
-    const char* message;
-} Button;
+// typedef struct {
+//     float x, y, width, height;
+//     const char* text;
+//     int clicked;
+//     const char* message;
+// } Button;
 
-Button buttons[3] = {
-    {100, 200, 100, 50, "Button 1", 0, },
-    {250, 200, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
-    {400, 200, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
-};
-void drawText(float x, float y, const char* text) {
-    glRasterPos2f(x, y);
-    for (int i = 0; text[i] != '\0'; ++i) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
-    }
-}
+// Button buttons[3] = {
+//     {100, 200, 100, 50, "Button 1", 0, },
+//     {250, 200, 100, 50, "Button 2", 0, "Button 2 Clicked!"},
+//     {400, 200, 100, 50, "Button 3", 0, "Button 3 Clicked!"}
+// };
+// void drawText(float x, float y, const char* text) {
+//     glRasterPos2f(x, y);
+//     for (int i = 0; text[i] != '\0'; ++i) {
+//         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+//     }
+// }
 
-void drawButtons() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
+// void drawButtons() {
+//     glClear(GL_COLOR_BUFFER_BIT);
+//     glLoadIdentity();
    
-    // Draw buttons
-    for (int i = 0; i < 3; ++i) {
-        glColor3f(0.5f, 0.5f, 0.5f);
-        glBegin(GL_QUADS);
-        glVertex2f(buttons[i].x, buttons[i].y);
-        glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y);
-        glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y + buttons[i].height);
-        glVertex2f(buttons[i].x, buttons[i].y + buttons[i].height);
-        glEnd();
+//     // Draw buttons
+//     for (int i = 0; i < 3; ++i) {
+//         glColor3f(0.5f, 0.5f, 0.5f);
+//         glBegin(GL_QUADS);
+//         glVertex2f(buttons[i].x, buttons[i].y);
+//         glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y);
+//         glVertex2f(buttons[i].x + buttons[i].width, buttons[i].y + buttons[i].height);
+//         glVertex2f(buttons[i].x, buttons[i].y + buttons[i].height);
+//         glEnd();
        
-        glColor3f(1.0f, 1.0f, 1.0f);
-        drawText(buttons[i].x + 10, buttons[i].y + 20, buttons[i].text);
-    }
+//         glColor3f(1.0f, 1.0f, 1.0f);
+//         drawText(buttons[i].x + 10, buttons[i].y + 20, buttons[i].text);
+//     }
 
-    // Display information
-    glColor3f(1.0f, 0.0f, 0.0f);
-    drawText(50, 50, sharedData->largestFile);
-    drawText(50, 100, sharedData->smallestFile);
-    char totalSizeText[100];
-    sprintf(totalSizeText, "Total Size: %ld bytes", sharedData->finalSize);
-    drawText(50, 150, totalSizeText);
+//     // Display information
+//     glColor3f(1.0f, 0.0f, 0.0f);
+//     drawText(50, 50, sharedData->largestFile);
+//     drawText(50, 100, sharedData->smallestFile);
+//     char totalSizeText[100];
+//     sprintf(totalSizeText, "Total Size: %ld bytes", sharedData->finalSize);
+//     drawText(50, 150, totalSizeText);
    
-    glFlush();
-}
+//     glFlush();
+// }
 
-void mouseClick(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        for (int i = 0; i < 3; ++i) {
-            if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].width &&
-                y >= buttons[i].y && y <= buttons[i].y + buttons[i].height) {
-                printf("%s\n", buttons[i].message);
-            }
-        }
-    }
-}
+// void mouseClick(int button, int state, int x, int y) {
+//     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+//         for (int i = 0; i < 3; ++i) {
+//             if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].width &&
+//                 y >= buttons[i].y && y <= buttons[i].y + buttons[i].height) {
+//                 printf("%s\n", buttons[i].message);
+//             }
+//         }
+//     }
+// }
 
-void initializeGraphics(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("File Information");
-    gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
-    glutDisplayFunc(drawButtons);
-    glutMouseFunc(mouseClick);
-    glutMainLoop();
-}
+// void initializeGraphics(int argc, char** argv) {
+//     glutInit(&argc, argv);
+//     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+//     glutCreateWindow("File Information");
+//     gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+//     glutDisplayFunc(drawButtons);
+//     glutMouseFunc(mouseClick);
+//     glutMainLoop();
+// }
 
 
 //functions:
@@ -243,7 +243,7 @@ int main(int argc, char *argv[]) {
     // glutMouseFunc(mouseClick);
 
     // glutMainLoop();
-     initializeGraphics(argc, argv);
+    //initializeGraphics(argc, argv);
 
     return 0;
 }
