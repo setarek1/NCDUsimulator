@@ -34,8 +34,5 @@
 - The code uses shared memory to store file information among different processes.
 - `pthread_mutex_t lock` is initialized to manage access to the shared memory data.
 - The code detaches and removes the shared memory segment (`shmdt()` and `shmctl()`).
-<<<<<<< HEAD
 - It also destroys the mutex (`pthread_mutex_destroy()`) after completing the tasks.
-=======
 - It also destroys the mutex (`pthread_mutex_destroy()`) after completing the tasks.
->>>>>>> 00909507028d417eb9cd5c30c618893bf970c4c5
